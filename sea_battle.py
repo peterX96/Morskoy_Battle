@@ -59,13 +59,6 @@ def dinamic_background(level_background,event):
                 
     return a,b,c
 
-class Servise_Functions:
-
-    def text(self,x, y, A, color, size):
-        pygame.font.init()
-        myfont = pygame.font.SysFont(' ', size)
-        textsurface = myfont.render(A, False, color)
-        screen.blit(textsurface, (x, y))
 
 
 pygame.display.update()
