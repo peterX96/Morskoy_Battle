@@ -1,1 +1,1 @@
-# Morskoy_Battle-kursovoy-game-
+# Morskoy_Battle
