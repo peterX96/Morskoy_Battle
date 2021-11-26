@@ -103,7 +103,7 @@ def static_background(flag):
 def dinamic_background(level_background, event):
     a, b, c = 0, level_background, 0
     for i in range(len(button_pushed_image[level_background])):
-        b_n = Button()
+        
         b_n._init(i)
         if event.type == pygame.MOUSEMOTION:
             if (b_n.pressure_test(event)):
@@ -218,8 +218,9 @@ motion_button = 0
 ship_catalog = [1, 2, 3, 4]
 
 s_f = Servise_Function()
-static_background(level_background)
+b_n = Button()
 
+static_background(level_background)
 while not finished:
     clock.tick(FPS)
 
