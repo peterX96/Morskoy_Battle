@@ -1,5 +1,6 @@
 import pygame
 from pygame.draw import *
+from random import choice
 
 pygame.init()
 
@@ -27,6 +28,7 @@ post_pressing_effect = [[(1, 0, 0), (0, 1, 0), (0, 8, 0)], [
     (0, 2, 0), (0, 5, 0)], [(0, 2, 1), (0, 2, 2), (0, 2, 3), (0, 2, 4), (0, 3, 0)], [(0, 2, 0), (0, 0, 0), (1, 0, 0)]]
 
 Map = [(100,100),(500,500)]
+S_0 = [[(-1,-1),(0,-1),(1,-1),(2,-1),(3,-1),(4,-1),(4,0),(4,1),(3,1),(2,1),(1,1),(0,1),(-1,1),(-1,0)],[(-1,-1),(0,-1),(1,-1),(2,-1),(3,-1),(3,0),(3,1),(2,1),(1,1),(0,1),(-1,1),(-1,0)],[(-1,-1),(0,-1),(1,-1),(2,-1),(2,0),(2,1),(1,1),(0,1),(-1,1),(-1,0)],[(-1,-1),(0,-1),(1,-1),(1,0),(1,1),(0,1),(-1,1),(-1,0)]]
 class Button:
     def _init(self, n):
 
@@ -49,35 +51,34 @@ class Button:
         x_rect = _x.get_rect(bottomleft=self.coord_bottomleft)
         screen.blit(_x, x_rect)
 
-class Motion_Buttons:
+class Ship_Buttons:
 
     def _init(self,event,n):
         self.image = pygame.image.load(button_unpushed_image[level_background][n])
-        self.image,self.image_rect = rot_center(self.image, 0, event.pos[0],event.pos[1])
+        self.image,self.image_rect = s_f.rot_center(self.image, 0, event.pos[0],event.pos[1])
         self.size = button_coord[level_background][n][1]
-        self.angle = 0
+        self.angle_flag = 0
 
     def examination_of_button(self,event):
-        if (self.angle % 90 == 0):
-            a ,b= self.size[0] / 2, self.size[1] / 2
+        if (self.angle_flag == 0):
+            a,b = self.size[0] / 2 , self.size[1] / 2
         else:
-            b ,a= self.size[0] / 2, self.size[1] / 2
+            print('*')
+            b,a = self.size[0] / 2 , self.size[1] / 2
+        x, y = event.pos[0] - 100 - a, event.pos[1] - 100 - b
         delta = abs(self.size[1])
-        x = event.pos[0] - Map[0][0] - a 
-        y = event.pos[1] - Map[0][1] - b
-        if (x >= 0 and x + 2*a <= Map[1][0] and y >= 0 and y + 2*b <= Map[1][1]):
-            p = int(x//delta)+1
-            h = int(y//delta)+1
-            print(x,y)
-            if (self.angle % 90 == 0):
-                print(p,h,self.size[0]//delta)
-                battlefield[h][p] = self.size[0]//delta
+        X,Y = int(x//delta), int(y//delta) 
+        print(' ')
+        if ( 0 <= x and x + 2 * a <= 600 and 0 <= y and y + 2 * a <= 650 ):
+            battlefield[X+1][Y] = int(self.size[0]//50)
         for row in battlefield:
             print(' '.join([str(elem) for elem in row]))
+
     def rotation(self,event):
 
-        self.image, self.image_rect = rot_center(self.image,90, event.pos[0],event.pos[1])
-        self.angle += 90
+        self.image, self.image_rect = s_f.rot_center(self.image,90, event.pos[0],event.pos[1])
+        if (self.angle_flag == 1): self.angle_flag = 0
+        else: self.angle_flag = 1
         screen.blit(self.image, self.image_rect)
 
     def _draw(self,event):
@@ -91,10 +92,8 @@ def static_background(flag):
     screen.blit(_x, x_rect)
     if level_background == 2 :
         for i in range(0,400,100):
-            text(950,170 + i, str(ship_catalog[i//100]),BLACK,64)
-        battleground(Map[0][0],Map[0][1],Map[1][1])
-
-
+            s_f.text(950,170 + i, str(ship_catalog[i//100]),BLACK,64)
+        s_f.battleground(Map[0][0],Map[0][1],Map[1][1])
 
 def dinamic_background(level_background, event):
     a, b, c = 0, level_background, 0
@@ -109,42 +108,85 @@ def dinamic_background(level_background, event):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if (b_n.pressure_test(event)):
                 a, b, c = post_pressing_effect[level_background][i]
-
     return a, b, c
 
-def dinamic_background_for_motion_buttons(ship, event):
-    motion_button = ship + 1
-    if event.type == pygame.MOUSEMOTION:
-        m_b_n._draw(event)
-    elif (event.type == pygame.MOUSEBUTTONDOWN):
-        if (event.button == 3):
-            m_b_n.rotation(event)
-        elif (event.button == 2):
-            ship_catalog[ship] += 1
-            motion_button = 0
-        elif (event.button == 1):
-            m_b_n.examination_of_button(event)
-        m_b_n._draw(event)
+class additional_background():
 
-    return motion_button
+    def _init_battlefield(self):
 
-def battleground(x,y,n):
+        self.battlefield = [[0] * 12 for i in range(12)]
+        self.battlefield2 = [[0] * 12 for i in range(12)]
 
-    for i in range(0,n + n//10,n//10):
+    def _init_ship(self, motion_button):
+        self.ship = Ship_Buttons()
+        self.ship._init(event,motion_button- 1)
+        ship_catalog[motion_button-1] -= 1
 
-        line(screen,BLACK,(x+i,y),(x+i,y+n),5)
-        line(screen,BLACK,(x,y+i),(x+n,y+i),5)
-def rot_center(image, angle, x, y):
-    
-    rotated_image = pygame.transform.rotate(image, angle)
-    new_rect = rotated_image.get_rect(center = image.get_rect(center = (x, y)).center)
+    def operator_on_ships_button(self,_ship, event):
 
-    return rotated_image, new_rect
-def text(x, y, A, color, size):
-    pygame.font.init()
-    myfont = pygame.font.SysFont(' ', size)
-    textsurface = myfont.render(A, False, color)
-    screen.blit(textsurface, (x, y))
+        motion_button = _ship + 1
+        if event.type == pygame.MOUSEMOTION:
+            self.ship._draw(event)
+
+        elif (event.type == pygame.MOUSEBUTTONDOWN):
+
+            if (event.button == 3):
+                self.ship.rotation(event)
+
+            elif (event.button == 2):
+                ship_catalog[_ship] += 1
+                motion_button = 0
+
+            elif (event.button == 1):
+                self.ship.examination_of_button(event)
+
+            self.ship._draw(event)
+
+        return motion_button
+      
+    def auto_set_ship(self):
+        size_ship = [3,2,1,0]
+        for n in ship_catalog:
+            for m in range(i):
+                self.flag_angle = choice(0,1)
+                A = []
+                if (self.flag_angle == 0):
+                    m,n = 11,11 - size_ship[n-1]
+                else:
+                    n,m = 11,11 - size_ship[n-1]
+
+                for i in range(1,m):
+                    for j in range(1,n):
+                        if (self.battlefield[i][j] == 0):
+                            A.append((i,j))
+
+                self.coord = choice(A)
+
+                for i in range(size_ship[n-1] + 1):
+                    self.battlefi
+        
+
+class Servise_Function:
+    def battleground(self,x,y,n):
+
+        for i in range(0,n + n//10,n//10):
+
+            line(screen,BLACK,(x+i,y),(x+i,y+n),5)
+            line(screen,BLACK,(x,y+i),(x+n,y+i),5)
+
+    def rot_center(self,image, angle, x, y):
+        
+        rotated_image = pygame.transform.rotate(image, angle)
+        new_rect = rotated_image.get_rect(center = image.get_rect(center = (x, y)).center)
+
+        return rotated_image, new_rect
+
+    def text(self,x, y, A, color, size):
+        pygame.font.init()
+        myfont = pygame.font.SysFont(' ', size)
+        textsurface = myfont.render(A, False, color)
+        screen.blit(textsurface, (x, y))
+
 pygame.display.update()
 clock = pygame.time.Clock()
 finished = False
@@ -155,8 +197,8 @@ flag_quit = 0
 gamemode = 0
 motion_button = 0
 ship_catalog = [1, 2, 3, 4]
-battlefield = [[0] * 12] * 12
 
+s_f = Servise_Function()
 static_background(level_background)
 
 while not finished:
@@ -185,14 +227,14 @@ while not finished:
             if (motion_button == 0):
                 flag_quit, level_background, motion_button = dinamic_background(
                     level_background, event)
+                add_bd = additional_background()
                 fl = 1
-            if (motion_button !=0 ):
+            else:
                 if (fl == 1):
-                    m_b_n = Motion_Buttons()
-                    m_b_n._init(event,motion_button- 1)
-                    ship_catalog[motion_button-1] -= 1
+                    add_bd._init_ship(motion_button)
                     fl = 0
-                motion_button = dinamic_background_for_motion_buttons(motion_button - 1,event)
+
+                motion_button = add_bd.operator_on_ships_button(motion_button - 1,event)
 
         elif (level_background == 3):
             static_background(level_background)
