@@ -220,8 +220,6 @@ ship_catalog = [1, 2, 3, 4]
 s_f = Servise_Function()
 b_n = Button()
 static_background(screen_id)
-
-static_background(level_background)
 while not finished:
     clock.tick(FPS)
 
