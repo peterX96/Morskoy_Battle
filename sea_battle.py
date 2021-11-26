@@ -63,22 +63,7 @@ class Ship_Buttons:
         self.image,self.image_rect = s_f.rot_center(self.image, 0, event.pos[0],event.pos[1])
         self.size = button_coord[screen_id][n][1]
         self.angle_flag = 0
-
-    def examination_of_button(self,event):
-        if (self.angle_flag == 0):
-            a,b = self.size[0] / 2 , self.size[1] / 2
-        else:
-            print('*')
-            b,a = self.size[0] / 2 , self.size[1] / 2
-        x, y = event.pos[0] - 100 - a, event.pos[1] - 100 - b
-        delta = abs(self.size[1])
-        X,Y = int(x//delta), int(y//delta) 
-        print(' ')
-        if ( 0 <= x and x + 2 * a <= 600 and 0 <= y and y + 2 * a <= 650 ):
-            battlefield[X+1][Y] = int(self.size[0]//50)
-        for row in battlefield:
-            print(' '.join([str(elem) for elem in row]))
-
+        
     def rotation(self,event):
 
         self.image, self.image_rect = s_f.rot_center(self.image,90, event.pos[0],event.pos[1])
@@ -142,7 +127,7 @@ class additional_background():
                 motion_button = 0
 
             elif (event.button == 1):
-                self.ship.examination_of_button(event)
+                pass
 
             self.ship._draw(event)
 
