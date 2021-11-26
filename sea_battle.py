@@ -37,11 +37,11 @@ Destroyer = [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)]
 class Button:
     def _init(self, n):
 
-        self.push_im = button_pushed_image[level_background][n]
-        self.unpush_im = button_unpushed_image[level_background][n]
+        self.push_im = button_pushed_image[screen_id][n]
+        self.unpush_im = button_unpushed_image[screen_id][n]
 
-        self.coord_bottomleft = button_coord[level_background][n][0]
-        self.size_button = button_coord[level_background][n][1]
+        self.coord_bottomleft = button_coord[screen_id][n][0]
+        self.size_button = button_coord[screen_id][n][1]
 
     def pressure_test(self, event):
         return (int(event.pos[0] >= self.coord_bottomleft[0] and event.pos[0] <= self.coord_bottomleft[0] + self.size_button[0] and event.pos[1] <= self.coord_bottomleft[1] and event.pos[1] >= self.coord_bottomleft[1] + self.size_button[1]))
@@ -59,9 +59,9 @@ class Button:
 class Ship_Buttons:
 
     def _init(self,event,n):
-        self.image = pygame.image.load(button_unpushed_image[level_background][n])
+        self.image = pygame.image.load(button_unpushed_image[screen_id][n])
         self.image,self.image_rect = s_f.rot_center(self.image, 0, event.pos[0],event.pos[1])
-        self.size = button_coord[level_background][n][1]
+        self.size = button_coord[screen_id][n][1]
         self.angle_flag = 0
 
     def examination_of_button(self,event):
@@ -95,7 +95,7 @@ def static_background(flag):
     _x = pygame.image.load(background_image[flag])
     x_rect = _x.get_rect(bottomleft=(0, 900))
     screen.blit(_x, x_rect)
-    if level_background == 2 :
+    if screen_id == 2 :
         for i in range(0,400,100):
             s_f.text(950,170 + i, str(ship_catalog[i//100]),BLACK,64)
         s_f.battleground(100,100,500)
@@ -211,7 +211,7 @@ clock = pygame.time.Clock()
 finished = False
 
 
-level_background = 0
+screen_id = 0
 flag_quit = 0
 gamemode = 0
 motion_button = 0
@@ -219,6 +219,7 @@ ship_catalog = [1, 2, 3, 4]
 
 s_f = Servise_Function()
 b_n = Button()
+static_background(screen_id)
 
 static_background(level_background)
 while not finished:
@@ -227,26 +228,16 @@ while not finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or flag_quit == 1:
             finished = True
-        elif (level_background == 0):
-
-            flag_quit, level_background, motion_button = dinamic_background(
-                level_background, event)
-            if (level_background != 0):
-                static_background(level_background)
-
-        elif (level_background == 1):
-
-            flag_quit, level_background, motion_button = dinamic_background(
-                level_background, event)
-            if (level_background != 1):
-                static_background(level_background)
-
-        elif (level_background == 2):  # SET YOUR SHIPS
-            static_background(level_background)
+        elif screen_id != 2:
+            flag_quit, screen_id, motion_button = dinamic_background(screen_id, event)
+            if screen_id != 0:
+                static_background(screen_id)
+        elif screen_id == 2:  # SET YOUR SHIPS
+            static_background(screen_id)
 
             if (motion_button == 0):
-                flag_quit, level_background, motion_button = dinamic_background(
-                    level_background, event)
+                flag_quit, screen_id, motion_button = dinamic_background(
+                    screen_id, event)
                 add_bd = additional_background()
                 fl = 1
             else:
@@ -256,12 +247,6 @@ while not finished:
 
                 motion_button = add_bd.operator_on_ships_button(motion_button - 1,event)
 
-        elif (level_background == 3):
-            static_background(level_background)
-            flag_quit, level_background, gamemode = dinamic_background(
-                level_background, event)
-            if (level_background != 3):
-                static_background(level_background)
 
     pygame.display.update()
 pygame.quit()
