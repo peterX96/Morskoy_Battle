@@ -181,8 +181,8 @@ class additional_background():
                         battlefield[int(coord[0] + B[i][1])][int(coord[1] + B[i][0])] = 1
                     else:
                         battlefield[int(coord[0] + B[i][0])][int(coord[1] + B[i][1])] = 1
-        
-
+                        
+        return [0,0,0,0]
 class Servise_Function:
     def battleground(self,x,y,n):
 
