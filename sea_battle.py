@@ -98,7 +98,7 @@ def static_background(flag):
     if level_background == 2 :
         for i in range(0,400,100):
             s_f.text(950,170 + i, str(ship_catalog[i//100]),BLACK,64)
-        s_f.battleground(Map[0][0],Map[0][1],Map[1][1])
+        s_f.battleground(100,100,500)
 
 def dinamic_background(level_background, event):
     a, b, c = 0, level_background, 0
