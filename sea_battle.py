@@ -411,6 +411,7 @@ while not finished:
                 elif (ship_choice == -3):
                     if (add.continue_button()):
                         screen_id = 4
+                        add.clear_battlefield(1)
                         add.auto_set_ship(1)
                         add.print_battlefield()
                     ship_choice = 0
