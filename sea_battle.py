@@ -298,7 +298,7 @@ class Additional_background():
         for row in self.battlefield[0]:
             print(' '.join([str(elem) for elem in row]))
         print('Second Field')
-        for row in self.battlefield[0]:
+        for row in self.battlefield[1]:
             print(' '.join([str(elem) for elem in row]))
 
 def operator_on_screen(screen_id):
