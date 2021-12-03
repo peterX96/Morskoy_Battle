@@ -4,7 +4,7 @@
         "pushed": "images_buttons/return_in_game_pushed_button.png",
         "unpushed": "images_buttons/return_in_game_unpushed_button.png",
         "coords": [[229, 477], [543, -63]],
-        "post_effect": [0, 2, 0],
+        "post_effect": [0, -10, 0],
         "gamemode": -1
     },
     {
