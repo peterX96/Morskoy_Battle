@@ -357,14 +357,12 @@ while not finished:
         elif (screen_id == 4 or screen_id == 5): # Here should be myasso
 
             flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
-            print(screen_id)
-        
+            
         elif (screen_id == 7):
             add.hiding_ships(player)
             add.draw_battleground(player)
 
             _old_screen_id = screen_id
-            print(' * ',screen_id, _old_screen_id)
             flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
         
         elif (screen_id == 6):
