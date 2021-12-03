@@ -220,19 +220,7 @@ class Battlefield():
                     self.battlefield[N][b][a] = 999
                 else:
                     self.affected_cells_of_seas[N].append((b,a))
-                    flag = False
-                
-         
-            print('First Field')
-            for row in self.battlefield[0]:
-                print(' '.join([str(elem) for elem in row]))
-            print('Second Field')
-            for row in self.battlefield[1]:
-                print(' '.join([str(elem) for elem in row]))
-
-            print(self.coordinates[0])
-            print(self.coordinates[1])
-            
+                    flag = False        
         return flag 
 
     def continue_button(self,N):
