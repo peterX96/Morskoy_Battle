@@ -30,7 +30,6 @@ def operator_on_buttons(old_screen_id, number, screen_id, event):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if (b_n.pressure_test(event)):
                 a, b, c = post_pressing_effect[screen_id][i]
-                print(_old_screen_id , b)
                 if (b == -10):
                     b = old_screen_id
     return a, b, c
@@ -224,18 +223,6 @@ class Battlefield():
                 else:
                     self.affected_cells_of_seas[N].append((b,a))
                     flag = False
-                
-         
-            print('First Field')
-            for row in self.battlefield[0]:
-                print(' '.join([str(elem) for elem in row]))
-            print('Second Field')
-            for row in self.battlefield[1]:
-                print(' '.join([str(elem) for elem in row]))
-
-            print(self.coordinates[0])
-            print(self.coordinates[1])
-            
         return flag 
 
     def continue_button(self,N):
