@@ -17,7 +17,7 @@ FPS = 100
 BLACK = (0, 0, 0)
 
 
-def operator_on_buttons(number, screen_id, event):
+def operator_on_buttons(old_screen_id, number, screen_id, event):
     a, b, c = 0, screen_id, 0
     for i in range(number):
         b_n._init(i,screen_id)
@@ -30,6 +30,9 @@ def operator_on_buttons(number, screen_id, event):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if (b_n.pressure_test(event)):
                 a, b, c = post_pressing_effect[screen_id][i]
+                print(_old_screen_id , b)
+                if (b == -10):
+                    b = old_screen_id
     return a, b, c
 
 class Battlefield():
@@ -220,7 +223,19 @@ class Battlefield():
                     self.battlefield[N][b][a] = 999
                 else:
                     self.affected_cells_of_seas[N].append((b,a))
-                    flag = False        
+                    flag = False
+                
+         
+            print('First Field')
+            for row in self.battlefield[0]:
+                print(' '.join([str(elem) for elem in row]))
+            print('Second Field')
+            for row in self.battlefield[1]:
+                print(' '.join([str(elem) for elem in row]))
+
+            print(self.coordinates[0])
+            print(self.coordinates[1])
+            
         return flag 
 
     def continue_button(self,N):
@@ -234,12 +249,9 @@ class Battlefield():
         for row in self.battlefield[1]:
             print(' '.join([str(elem) for elem in row]))
 
-        print(self.coordinates[0])
-        print(self.coordinates[1])
-
 def operator_on_screen(screen_id):
     old_screen_id = screen_id
-    flag_quit, screen_id, ship_choice = operator_on_buttons(
+    flag_quit, screen_id, ship_choice = operator_on_buttons(_old_screen_id,
         len(button_pushed_image[screen_id]), screen_id, event)
     if screen_id != old_screen_id:
         static_background(screen_id)
@@ -254,6 +266,8 @@ add = Battlefield()
 
 gamemode = 1
 player = 0
+_old_screen_id = 0
+
 static_background(screen_id)
 
 while not finished:
@@ -262,11 +276,12 @@ while not finished:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or flag_quit == 1:
             finished = True
-        elif screen_id != 2 and screen_id != 4 and screen_id != 5:
+        elif screen_id != 2 and screen_id != 4 and screen_id != 5 and screen_id != 7 and screen_id != 6 :
 
             if (screen_id != 3):
                 add._init_battlefield()
-            
+                _old_screen_id = screen_id
+
             flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
             flag_fill = False
 
@@ -274,6 +289,8 @@ while not finished:
 
             static_background(screen_id)
             add.draw_battleground(player)
+
+            _old_screen_id = screen_id
 
             if (ship_choice == 0):
                 flag_quit, screen_id, ship_choice = operator_on_screen(
@@ -330,18 +347,33 @@ while not finished:
                         screen_id = 4
                         x0,y0 = 250,150
                         player = 0
+                        flag_start = True
+
                         static_background(screen_id)
                         add.print_battlefield()
 
                     ship_choice = 0
 
-        elif (screen_id == 4): # Here should be myasso
-            print('*')
-            flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
+        elif (screen_id == 4 or screen_id == 5): # Here should be myasso
 
-        elif (screen_id == 5):
-            add.draw_battleground(0)
+            flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
+            print(screen_id)
+        
+        elif (screen_id == 7):
+            add.hiding_ships(player)
+            add.draw_battleground(player)
+
+            _old_screen_id = screen_id
+            print(' * ',screen_id, _old_screen_id)
+            flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
+        
+        elif (screen_id == 6):
+            _old_screen_id = screen_id
+
+        
+
 
     pygame.display.update()
     pygame.display.set_caption("Sea Battle")
 pygame.quit()
+
