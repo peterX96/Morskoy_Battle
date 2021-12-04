@@ -14,6 +14,22 @@
     {
         "name": "QUESTION ABOUT GAME",
         "image": "images_static_battleground/question_quit.png"
+    },
+    {
+        "name": "MOVE_OF_FIRST_PLAYER",
+        "image": "images_static_battleground/move_of_first_player.png"
+    },
+    {
+        "name": "MOVE_OF_SECOND_PLAYER",
+        "image": "images_static_battleground/move_of_second_player.png"
+    },
+    {
+        "name": "FIELD_OF_ATTACK PLAYER",
+        "image": "images_static_battleground/field_of_attack_player.png"
+    },
+    {
+        "name": "FIELD_OF_DEFEND_PLAYER",
+        "image": "images_static_battleground/field_of_defend_player.png"
     }
     
 ]
