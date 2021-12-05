@@ -1,7 +1,8 @@
 import json
 
 
-Name_files_buttons = ['menu_buttons.json','question_about_gamemode_buttons.json','set_ships_buttons.json','question_quit_buttons.json']
+Name_files_buttons = ['menu_buttons.json', 'question_about_gamemode_buttons.json', 'set_ships_buttons.json', 'question_quit_buttons.json',
+                      'screen_of_first-second_player.json', 'screen_of_first-second_player.json', 'field_of_attack_player_buttons.json', 'field_of_defender_player_buttons.json']
 
 p = len(Name_files_buttons)
 button_pushed_image = [0] * p
@@ -13,10 +14,10 @@ Gamemode = [0] * p
 k = 0
 
 for name_file in Name_files_buttons:
-    a,b,c,d,e = [],[],[],[],[]
+    a, b, c, d, e = [], [], [], [], []
     with open(name_file) as buttons_json_file:
         buttons_list = json.load(buttons_json_file)
-    
+
     for i in range(len(buttons_list)):
         a.append(buttons_list[i]["pushed"])
         b.append(buttons_list[i]["unpushed"])
