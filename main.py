@@ -19,6 +19,7 @@ BLACK = (0, 0, 0)
 
 def operator_on_buttons(old_screen_id, number, screen_id, event):
     a, b, c = 0, screen_id, 0
+    gamemode = -1
     for i in range(number):
         b_n._init(i,screen_id)
         
@@ -30,9 +31,10 @@ def operator_on_buttons(old_screen_id, number, screen_id, event):
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if (b_n.pressure_test(event)):
                 a, b, c = post_pressing_effect[screen_id][i]
+                gamemode = Gamemode[screen_id][i] 
                 if (b == -10):
                     b = old_screen_id
-    return a, b, c
+    return a, b, c, gamemode 
 
 class Battlefield():
 
@@ -184,15 +186,7 @@ class Battlefield():
                 center_ship = ((self.affected_cells_of_seas[N][i][1] - 1) * delta + y0 + delta//2 + 2 * delta  ,(self.affected_cells_of_seas[N][i][0] - 1)* delta + x0 + delta//2 -2 * delta)
                 x_rect = _x.get_rect(center = center_ship)
                 screen.blit(_x, x_rect)
-        if (len(self.affected_cells_of_ships[N]) > 0):
-            for i in range(len(self.affected_cells_of_ships[N])):
-                _x = pygame.image.load(attack_image[1])
-                center_ship = ((self.affected_cells_of_ships[N][i][1] - 1) * delta + y0 + delta//2 + 2 * delta  ,(self.affected_cells_of_ships[N][i][0] - 1)* delta + x0 + delta//2 -2 * delta)
-                x_rect = _x.get_rect(center = center_ship)
-                screen.blit(_x, x_rect)
-
         battleground(x0, y0, 10 * delta)
-
         if (self.flag[N] == 1):
             for i in range(len(self.id[N])):
                 _x = pygame.image.load(ships_images[self.id[N][i]])
@@ -211,6 +205,13 @@ class Battlefield():
                         _x, 90 + self.angle[N][i], center_ship[0], center_ship[1])
 
                 x_rect = _x.get_rect(center=center_ship)
+                screen.blit(_x, x_rect)
+
+        if (len(self.affected_cells_of_ships[N]) > 0):
+            for i in range(len(self.affected_cells_of_ships[N])):
+                _x = pygame.image.load(attack_image[1])
+                center_ship = ((self.affected_cells_of_ships[N][i][1] - 1) * delta + y0 + delta//2 + 2 * delta  ,(self.affected_cells_of_ships[N][i][0] - 1)* delta + x0 + delta//2 -2 * delta)
+                x_rect = _x.get_rect(center = center_ship)
                 screen.blit(_x, x_rect)
 
     def hiding_ships(self,N):
@@ -272,7 +273,7 @@ class Battlefield():
 
     def continue_button(self,N):
         return (int(self.catalog[N] == [0, 0, 0, 0]))
-    
+ 
     def print_battlefield(self): #these function for only view
         print('First Field')
         for row in self.battlefield[0]:
@@ -283,13 +284,18 @@ class Battlefield():
         print(self.id[0], self.id[1])
         print(self.lives[0],self.lives[1])
 
-def operator_on_screen(screen_id):
+def operator_on_screen(screen_id,gamemode):
     old_screen_id = screen_id
-    flag_quit, screen_id, ship_choice = operator_on_buttons(_old_screen_id,
+    new_gamemode = 0
+
+    flag_quit, screen_id, ship_choice, new_gamemode = operator_on_buttons(_old_screen_id,
         len(button_pushed_image[screen_id]), screen_id, event)
+    if (new_gamemode != -1):
+        gamemode = new_gamemode
+
     if screen_id != old_screen_id:
         static_background(screen_id)
-    return flag_quit, screen_id, ship_choice
+    return flag_quit, screen_id, ship_choice, gamemode
 
 pygame.display.update()
 clock = pygame.time.Clock()
@@ -298,7 +304,7 @@ finished = False
 b_n = Button()
 add = Battlefield()
 
-gamemode = 1
+gamemode = 0
 player = 0
 _old_screen_id = 0
 flag_hit = True
@@ -317,7 +323,7 @@ while not finished:
                 add._init_battlefield()
                 _old_screen_id = screen_id
 
-            flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
+            flag_quit, screen_id, ship_choice, gamemode = operator_on_screen(screen_id,gamemode)
             flag_fill = False
 
         elif screen_id == 2:  # SET YOUR SHIPS
@@ -327,8 +333,8 @@ while not finished:
 
             if (ship_choice == 0):
                 _old_screen_id = screen_id
-                flag_quit, screen_id, ship_choice = operator_on_screen(
-                    screen_id)
+                flag_quit, screen_id, ship_choice, gamemode = operator_on_screen(
+                    screen_id,gamemode)
                 flag_init_ships = True
                 if (flag_fill == True and ship_choice > 0):
                     ship_choice = 0
@@ -361,9 +367,6 @@ while not finished:
                         screen_id = 4 
                         add.clear_battlefield(1)
                         add.auto_set_ship(1)
-
-                        flag_start = True
-
                         static_background(screen_id)
 
                         x0,y0 = 250,150
@@ -374,37 +377,34 @@ while not finished:
                         add.clear_battlefield(player)
                         flag_init_ships = True
                         flag_fill == False
+                        print('*')
 
                     elif (add.continue_button(player) and gamemode == 1 and player == 1):
 
-                        screen_id = 6
+                        screen_id = 4
                         flag_move = True
                         x0,y0 = 250,150
                         player = 1
+                        print('/')
 
-                        flag_start = True
                         static_background(screen_id)
 
                     ship_choice = 0
 
         elif (screen_id == 4 or screen_id == 5): # Here should be myasso
-
-            flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
-            print(player,screen_id)
+            
+            flag_quit, screen_id, ship_choice, gamemode = operator_on_screen(screen_id,gamemode)
             flag_move = True
 
         elif (screen_id == 7): # defend ship!
 
-            if (flag_start):
-                flag_start = False
-                screen_id = 6
-            else:
-                add.hiding_ships(player)
-                add.draw_battleground(player)
-                
-                flag_move = True
-                _old_screen_id = screen_id
-                flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
+            add.dehiding_ships(player)
+            add.draw_battleground(player)
+            flag_move = True
+            _old_screen_id = screen_id
+            flag_quit, screen_id, ship_choice, gamemode = operator_on_screen(screen_id, gamemode)
+            if (ship_choice == 1):
+                player = 1 - player
         
         elif (screen_id == 6): #ATTACK SHIP!!!
             
@@ -413,14 +413,16 @@ while not finished:
             if (flag_move):
                 flag_hit = add.attack_on_ships(event,player)
 
-            #if (flag_hit == 0):
-                #flag_move = False
+            if (flag_hit == 0):
+                flag_move = False
 
-            _old_screen_id = screen_id
-            flag_quit, screen_id, ship_choice = operator_on_screen(screen_id)
-            
-            
+            flag_quit, screen_id, ship_choice, gamemode = operator_on_buttons(_old_screen_id,len(button_pushed_image[screen_id]), screen_id, event)
+            if (screen_id != 6):
 
+                screen_id -= player
+
+                static_background(screen_id)
+            
     pygame.display.update()
     pygame.display.set_caption("Sea Battle")
 pygame.quit()
