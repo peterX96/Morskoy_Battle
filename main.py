@@ -311,13 +311,14 @@ flag_hit = True
 
 static_background(screen_id)
 
+pygame.display.set_caption("Sea Battle")
 while not finished:
     clock.tick(FPS)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT or flag_quit == 1:
             finished = True
-        elif screen_id != 2 and screen_id != 4 and screen_id != 5 and screen_id != 7 and screen_id != 6 :
+        elif screen_id not in [2,4,5,6,7]: #screen_id != 2 and screen_id != 4 and screen_id != 5 and screen_id != 7 and screen_id != 6 :
 
             if (screen_id != 3):
                 add._init_battlefield()
@@ -424,5 +425,4 @@ while not finished:
                 static_background(screen_id)
             
     pygame.display.update()
-    pygame.display.set_caption("Sea Battle")
 pygame.quit()
